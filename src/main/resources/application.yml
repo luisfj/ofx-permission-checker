@@ -1,0 +1,7 @@
+server:
+    port: 8050
+    servlet:
+        context-path: /api/v1/permission-checker
+spring:
+    application:
+        name: ofx-permission-checker
