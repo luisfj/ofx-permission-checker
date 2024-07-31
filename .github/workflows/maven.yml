@@ -46,4 +46,4 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT }}
         script: |
-          cd /srv;docker stop ofx-permission-checker;docker rm ofx-permission-checker;docker pull luisfj/ofx-permission-checker:latest;docker run -d --env-file ./deploy/env.list --name ofx-permission-checker -p 8050:8050 luisfj/ofx-permission-checker
+          cd /srv;docker stop ofx-permission-checker;docker rm ofx-permission-checker;docker pull luisfj/ofx-permission-checker:latest;docker run -d --env-file ./deploy/env.list --network prodnet --name ofx-permission-checker luisfj/ofx-permission-checker
