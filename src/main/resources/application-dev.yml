@@ -1,7 +1,7 @@
 conf:
     db:
-        host: db
-        port: 5432
+        host: localhost
+        port: 5777
         database: ofxdb
         user: postgres
         pass: postgres
