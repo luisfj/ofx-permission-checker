@@ -1,0 +1,7 @@
+conf:
+    db:
+        host: db
+        port: 5432
+        database: ofxdb
+        user: postgres
+        pass: postgres

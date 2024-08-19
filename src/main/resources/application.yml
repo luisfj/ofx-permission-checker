@@ -6,4 +6,34 @@ spring:
     profiles:
         active: ${SPRING_ACTIVE_PROFILE:dev}
     application:
-        name: ofx-permission-checker
+        name: ofx-permission-checker  
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://localhost:9091/realms/luifj-ofx-auth
+    datasource:
+        url: jdbc:postgresql://${conf.db.host}:${conf.db.port}/${conf.db.database}
+        username: ${conf.db.user}
+        password: ${conf.db.pass}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: none
+    flyway:
+        user: ${conf.db.user}
+        password: ${conf.db.pass}
+        schemas: public
+        url: jdbc:postgresql://${conf.db.host}:${conf.db.port}/${conf.db.database}
+
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/                   
+keycloak:
+    realm: luifj-ofx-auth
+    adminClientId: luisfj-ofx-backend-admin
+    adminClientSecret: MqeOH6Cj44uKoeXHE8ebmxMHJ1cksPis
+    urls:
+        auth: http://localhost:9091
