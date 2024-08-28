@@ -1,16 +1,17 @@
 package dev.luisjohann.ofxpermissionchecker.service;
 
-import java.util.List;
-
+import dev.luisjohann.ofxpermissionchecker.dto.UserRegisterDTO;
+import dev.luisjohann.ofxpermissionchecker.exceptions.UnauthorizedException;
+import dev.luisjohann.ofxpermissionchecker.exceptions.UsuarioJaExisteException;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import dev.luisjohann.ofxpermissionchecker.dto.UserRegisterDTO;
-import dev.luisjohann.ofxpermissionchecker.exceptions.UsuarioJaExisteException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -56,12 +57,12 @@ public class KeycloakService {
       }
    }
 
-   public void findByEmail() {
-      System.out.println(keycloakClient.realm(realm).users().userProfile());
-      var response = keycloakClient.realm(realm).users().searchByEmail("luisfj_pr@hotmail.com", true);
+   public UserRepresentation findUserDetailsByEmail(String email) {
+      var response = keycloakClient.realm(realm)
+              .users()
+              .searchByEmail(email, true);
 
-      System.out.println(response);
-      System.out.println("---------- find USER ------------");
+      return response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
 
    }
 }

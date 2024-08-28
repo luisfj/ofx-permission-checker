@@ -2,6 +2,8 @@ package dev.luisjohann.ofxpermissionchecker.service;
 
 import java.time.LocalDateTime;
 
+import dev.luisjohann.ofxpermissionchecker.dto.SseUserChangeMessageDTO;
+import dev.luisjohann.ofxpermissionchecker.queue.QueueSenderUserChange;
 import org.springframework.stereotype.Service;
 
 import dev.luisjohann.ofxpermissionchecker.dto.UserRegisterDTO;
@@ -17,6 +19,7 @@ public class UserService {
 
    final UserRepository userRepository;
    final KeycloakService keycloakService;
+   final QueueSenderUserChange queueSenderUserChange;
 
    public void createNewUser(@Valid UserRegisterDTO newUserDto) {
       var newKeycloakUserId = keycloakService.addUser(newUserDto);
@@ -24,9 +27,9 @@ public class UserService {
       var userOpt = userRepository.findByEmail(newUserDto.email());
 
       userOpt.ifPresentOrElse(user -> {
-         user.setStatus(StatusUser.ACTIVE);
          user.setIdKeyCloack(newKeycloakUserId);
          userRepository.save(user);
+         queueSenderUserChange.send(new SseUserChangeMessageDTO(user.getIdKeyCloack(), user.getEmail(), user.getName()));
       }, () -> {
          var user = new UserEntity();
          user.setEmail(newUserDto.email());
@@ -35,6 +38,7 @@ public class UserService {
          user.setIdKeyCloack(newKeycloakUserId);
          user.setCreatedAt(LocalDateTime.now());
          userRepository.save(user);
+         queueSenderUserChange.send(new SseUserChangeMessageDTO(user.getIdKeyCloack(), user.getEmail(), user.getName()));
       });
    }
 

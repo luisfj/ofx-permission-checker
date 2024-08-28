@@ -5,5 +5,5 @@ import dev.luisjohann.ofxpermissionchecker.exceptions.UnauthorizedException;
 
 public interface ICheckPermissionService {
 
-   void checkPermission(EventPermissionType type, Long userId, Long ueId) throws UnauthorizedException;
+   void checkPermission(EventPermissionType type, Long ueId) throws UnauthorizedException;
 }

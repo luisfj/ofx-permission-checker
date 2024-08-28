@@ -26,6 +26,11 @@ spring:
         password: ${conf.db.pass}
         schemas: public
         url: jdbc:postgresql://${conf.db.host}:${conf.db.port}/${conf.db.database}
+    rabbitmq:
+      host: ${conf.rabbit.host}
+      port: ${conf.rabbit.port}
+      username: ${conf.rabbit.user}
+      password: ${conf.rabbit.pass}
 
 eureka:
   client:
@@ -34,6 +39,16 @@ eureka:
 keycloak:
     realm: luifj-ofx-auth
     adminClientId: luisfj-ofx-backend-admin
-    adminClientSecret: MqeOH6Cj44uKoeXHE8ebmxMHJ1cksPis
+    adminClientSecret: Oczq2jdykpvBZIZ3QICb31jlJjaTwZiH
     urls:
         auth: http://localhost:9091
+
+queue:
+  name:
+    user-change: change.user.queue
+    ue-change: change.ue.queue
+  routing-key:
+    user-change: changes.user
+    ue-change: changes.ue
+exchange:
+  name: ofx.app

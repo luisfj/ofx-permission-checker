@@ -30,6 +30,8 @@ public class UeEntity {
       Long id;
       @Column(nullable = false)
       String name;
+      @Column
+      String color;
       @Column(name = "created_at", nullable = false)
       @Temporal(TemporalType.TIMESTAMP)
       @CreatedDate

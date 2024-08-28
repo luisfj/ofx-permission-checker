@@ -1,4 +1,4 @@
 package dev.luisjohann.ofxpermissionchecker.dto;
 
-public record UeRegisterDTO(String name) {
+public record UeRegisterDTO(String name, String color) {
 }
