@@ -5,6 +5,10 @@ public record UeUserCanAccessDTO(
         String createdEmail,
         Long ueId,
         String ueName,
-        String color) {
+        String color,
+        boolean administrator,
+        boolean permissionRead,
+        boolean permissionWrite,
+        boolean permissionImport) {
 
 }
