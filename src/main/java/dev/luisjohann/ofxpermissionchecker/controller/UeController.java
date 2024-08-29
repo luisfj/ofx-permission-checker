@@ -10,6 +10,7 @@ import dev.luisjohann.ofxpermissionchecker.service.UeService;
 import dev.luisjohann.ofxpermissionchecker.service.UserUeService;
 import dev.luisjohann.ofxpermissionchecker.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ue")
 @RequiredArgsConstructor
+@Slf4j
 public class UeController {
     final UeService ueService;
     final UserUeService userUeService;
@@ -26,7 +28,16 @@ public class UeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void criarUe(@RequestBody UeRegisterDTO dto) {
+        log.info("criarUe: nome:{}, cor:{}", dto.name(), dto.color());
         ueService.createUe(dto);
+    }
+
+    @PutMapping("/{ueId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void atualizarUe(@PathVariable("ueId") Long ueId, @RequestBody UeRegisterDTO dto) {
+        log.info("atualizarUe: {}, nome:{}, cor:{}", ueId, dto.name(), dto.color());
+        checkPermissionService.checkPermission(EventPermissionType.POST_DATA, ueId);
+        ueService.updateUe(ueId, dto);
     }
 
     @DeleteMapping("/users/{ueId}/{userId}")

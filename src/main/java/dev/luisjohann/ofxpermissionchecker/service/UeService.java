@@ -4,6 +4,7 @@ import dev.luisjohann.ofxpermissionchecker.dto.SseUeChangeMessageDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.UeRegisterDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.map.UeMapper;
 import dev.luisjohann.ofxpermissionchecker.enums.StatusActiveInactive;
+import dev.luisjohann.ofxpermissionchecker.exceptions.ImportOfxException;
 import dev.luisjohann.ofxpermissionchecker.queue.QueueSenderUeChange;
 import dev.luisjohann.ofxpermissionchecker.repository.UeRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,18 @@ public class UeService {
 
         var saved = ueRepository.save(newUe);
         userUeService.inviteUserAsAdminToUe(authService.getLoggedUser(), saved);
+        queueSenderUeChange.send(new SseUeChangeMessageDTO(saved.getId(), saved.getName(), saved.getStatus()));
+    }
+
+    @Transactional
+    public void updateUe(Long ueId, UeRegisterDTO dto) {
+        var ue = ueRepository.findById(ueId)
+                .orElseThrow(() -> new ImportOfxException("Ue não encontrada"));
+
+        ue.setName(dto.name());
+        ue.setColor(dto.color());
+
+        var saved = ueRepository.save(ue);
         queueSenderUeChange.send(new SseUeChangeMessageDTO(saved.getId(), saved.getName(), saved.getStatus()));
     }
 
