@@ -71,7 +71,7 @@ public class UeController {
 
     @GetMapping("/users/{ueId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserUeDetailDTO> findUeInvites(@PathVariable("ueId") Long ueId) {
+    public List<UserUeDetailDTO> findUeUsers(@PathVariable("ueId") Long ueId) {
         checkPermissionService.checkPermission(EventPermissionType.INVITE, ueId);
 
         return userUeService.findUeUsers(ueId);
