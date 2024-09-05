@@ -2,6 +2,7 @@ package dev.luisjohann.ofxpermissionchecker.service;
 
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDetailDTO;
+import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDetailUeDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.map.UserUeInviteMapper;
 import dev.luisjohann.ofxpermissionchecker.enums.StatusUserInvite;
 import dev.luisjohann.ofxpermissionchecker.exceptions.ImportOfxException;
@@ -92,10 +93,10 @@ public class UserUeInviteService {
         return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
     }
 
-    public List<UserUeInviteDetailDTO> findMyInvites() {
+    public List<UserUeInviteDetailUeDTO> findMyInvites() {
         var invites = userUeInviteRepository.findByEmailIgnoreCaseAndStatus(authService.getLoggedUserEmail(), StatusUserInvite.INVITED);
 
-        return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
+        return UserUeInviteMapper.INSTANCE.entityToInviteDetailUeListDTO(invites);
     }
 
 }

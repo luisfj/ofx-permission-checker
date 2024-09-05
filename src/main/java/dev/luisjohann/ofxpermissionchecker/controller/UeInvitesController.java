@@ -2,6 +2,7 @@ package dev.luisjohann.ofxpermissionchecker.controller;
 
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDetailDTO;
+import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDetailUeDTO;
 import dev.luisjohann.ofxpermissionchecker.enums.EventPermissionType;
 import dev.luisjohann.ofxpermissionchecker.service.ICheckPermissionService;
 import dev.luisjohann.ofxpermissionchecker.service.UserUeInviteService;
@@ -34,13 +35,13 @@ public class UeInvitesController {
         userUeInviteService.updateInviteUser(dto, ueId, inviteId);
     }
 
-    @PostMapping("/invite/confirm/{inviteId}")
+    @PutMapping("/invite/confirm/{inviteId}")
     @ResponseStatus(HttpStatus.OK)
     public void confirmInvite(@PathVariable("inviteId") Long inviteId) {
         userUeInviteService.confirmInvite(inviteId);
     }
 
-    @PostMapping("/invite/reject/{inviteId}")
+    @PutMapping("/invite/reject/{inviteId}")
     @ResponseStatus(HttpStatus.OK)
     public void rejectInvite(@PathVariable("inviteId") Long inviteId) {
         userUeInviteService.rejectInvite(inviteId);
@@ -63,7 +64,7 @@ public class UeInvitesController {
 
     @GetMapping("/invites/")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserUeInviteDetailDTO> findMyInvites() {
+    public List<UserUeInviteDetailUeDTO> findMyInvites() {
         return userUeInviteService.findMyInvites();
     }
 
