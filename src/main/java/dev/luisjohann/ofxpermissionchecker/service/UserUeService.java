@@ -63,7 +63,7 @@ public class UserUeService {
     }
 
     public void removeUserAccess(Long ueId, Long userId) {
-        if (!userUeRepository.existsByUserIdNotAndUeIdAndAdministratorTrue(userId, ueId))
+        if (!userUeRepository.existsByUserIdNotAndUeIdAndStatusAndAdministratorTrue(userId, ueId, StatusUser.ACTIVE))
             throw new ImportOfxException("Não é possível remover usuário se este for o ultimo administrador");
 
         var deletePermission = userUeRepository.findByUserIdAndUeId(userId, ueId)
@@ -86,7 +86,7 @@ public class UserUeService {
     }
 
     public void inactivateUserAccess(Long ueId, Long userId) {
-        if (!userUeRepository.existsByUserIdNotAndUeIdAndAdministratorTrue(userId, ueId))
+        if (!userUeRepository.existsByUserIdNotAndUeIdAndStatusAndAdministratorTrue(userId, ueId, StatusUser.ACTIVE))
             throw new ImportOfxException("Não é possível inativar o usuário se este for o ultimo administrador");
 
         var permission = userUeRepository.findByUserIdAndUeId(userId, ueId)
@@ -100,8 +100,9 @@ public class UserUeService {
         var updateUserPermission = userUeRepository.findByUserIdAndUeId(userId, ueId)
                 .orElseThrow(() -> new ImportOfxException("Não existe permissão com os dados informados"));
 
-        if (!dto.administrator() && updateUserPermission.isAdministrator()
-                && !userUeRepository.existsByUserIdNotAndUeIdAndAdministratorTrue(userId, ueId))
+        var isLastAdmin = !userUeRepository.existsByUserIdNotAndUeIdAndStatusAndAdministratorTrue(userId, ueId, StatusUser.ACTIVE);
+
+        if (!dto.administrator() && updateUserPermission.isAdministrator() && isLastAdmin)
             throw new ImportOfxException("Não é possível remover usuário de administrador se este for o ultimo administrador");
 
         updateUserPermission.setAdministrator(dto.administrator());

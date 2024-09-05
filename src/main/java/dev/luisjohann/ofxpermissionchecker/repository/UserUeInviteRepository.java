@@ -21,4 +21,6 @@ public interface UserUeInviteRepository extends CrudRepository<UserUeInviteEntit
    Optional<UserUeInviteEntity> findByIdAndUeId(Long inviteId, Long ueId);
 
    boolean existsByEmailAndUeIdAndStatus(String email, Long ueId, StatusUserInvite status);
+
+   Optional<UserUeInviteEntity> findByIdAndUeIdAndStatus(Long id, Long ueId, StatusUserInvite status);
 }

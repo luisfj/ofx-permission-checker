@@ -1,11 +1,5 @@
 package dev.luisjohann.ofxpermissionchecker.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.UserUeInviteDetailDTO;
 import dev.luisjohann.ofxpermissionchecker.dto.map.UserUeInviteMapper;
@@ -16,74 +10,92 @@ import dev.luisjohann.ofxpermissionchecker.repository.UeRepository;
 import dev.luisjohann.ofxpermissionchecker.repository.UserUeInviteRepository;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserUeInviteService {
 
-   final UserUeInviteRepository userUeInviteRepository;
-   final UserUeService userUeService;
-   final UeRepository ueRepository;
-   final AuthService authService;
+    final UserUeInviteRepository userUeInviteRepository;
+    final UserUeService userUeService;
+    final UeRepository ueRepository;
+    final AuthService authService;
 
-   public void inviteUser(UserUeInviteDTO inviteDTO, Long ueId) {      
-      if (userUeService.existsByUserEmailAndUeId(inviteDTO.email(), ueId) ||
-            userUeInviteRepository.existsByEmailAndUeIdAndStatus(inviteDTO.email(), ueId, StatusUserInvite.INVITED))
-         throw new ImportOfxException("Convite já existe ou usuário já possui acesso a UE");
+    public void inviteUser(UserUeInviteDTO inviteDTO, Long ueId) {
+        if (userUeService.existsByUserEmailAndUeId(inviteDTO.email(), ueId) ||
+                userUeInviteRepository.existsByEmailAndUeIdAndStatus(inviteDTO.email(), ueId, StatusUserInvite.INVITED))
+            throw new ImportOfxException("Convite já existe ou usuário já possui acesso a UE");
 
-      var ue = ueRepository.findById(ueId).orElseThrow(() -> new NotFoundException("UE informada não existe"));
-      var invite = UserUeInviteMapper.INSTANCE.dtoToEntity(inviteDTO);
-      invite.setStatus(StatusUserInvite.INVITED);
-      invite.setUe(ue);
-      invite.setCreatedAt(LocalDateTime.now());
-      invite.setCreatedBy(authService.getLoggedUser());
+        var ue = ueRepository.findById(ueId).orElseThrow(() -> new NotFoundException("UE informada não existe"));
+        var invite = UserUeInviteMapper.INSTANCE.dtoToEntity(inviteDTO);
+        invite.setStatus(StatusUserInvite.INVITED);
+        invite.setUe(ue);
+        invite.setCreatedAt(LocalDateTime.now());
+        invite.setCreatedBy(authService.getLoggedUser());
 
-      userUeInviteRepository.save(invite);
-   }
+        userUeInviteRepository.save(invite);
+    }
 
-   @Transactional
-   public void confirmInvite(Long inviteId) {
-      var loggedUser = authService.getLoggedUser();
+    public void updateInviteUser(UserUeInviteDTO inviteDTO, Long ueId, Long inviteId) {
+        var invite = userUeInviteRepository.findByIdAndUeIdAndStatus(inviteId, ueId, StatusUserInvite.INVITED)
+                .orElseThrow(() -> new ImportOfxException("Não existe convite com os parâmetros informados"));
 
-      var invite = userUeInviteRepository.findByIdAndEmailIgnoreCase(inviteId, loggedUser.getEmail())
-            .orElseThrow(() -> new UnauthorizedException("Acesso negado"));
+        invite.setStatus(StatusUserInvite.INVITED);
+        invite.setEmail(inviteDTO.email());
+        invite.setAdministrator(inviteDTO.administrator());
+        invite.setPermissionImport(inviteDTO.permissionImport());
+        invite.setPermissionRead(inviteDTO.permissionRead());
+        invite.setPermissionWrite(inviteDTO.permissionWrite());
 
-      invite.setStatus(StatusUserInvite.CONFIRMED);
+        userUeInviteRepository.save(invite);
+    }
 
-      userUeInviteRepository.save(invite);
+    @Transactional
+    public void confirmInvite(Long inviteId) {
+        var loggedUser = authService.getLoggedUser();
 
-      userUeService.addAccessFromConfimedInvite(invite, loggedUser);
-   }
+        var invite = userUeInviteRepository.findByIdAndEmailIgnoreCase(inviteId, loggedUser.getEmail())
+                .orElseThrow(() -> new UnauthorizedException("Acesso negado"));
 
-   public void rejectInvite(Long inviteId) {
-      var loggedUser = authService.getLoggedUser();
+        invite.setStatus(StatusUserInvite.CONFIRMED);
 
-      var invite = userUeInviteRepository.findByIdAndEmailIgnoreCase(inviteId, loggedUser.getEmail())
-            .orElseThrow(() -> new UnauthorizedException("Acesso negado"));
+        userUeInviteRepository.save(invite);
 
-      invite.setStatus(StatusUserInvite.REJECTED);
+        userUeService.addAccessFromConfimedInvite(invite, loggedUser);
+    }
 
-      userUeInviteRepository.save(invite);
-   }
-   
-   public void deleteInvite(Long ueId, Long inviteId) {
-      var invite = userUeInviteRepository.findByIdAndUeId(inviteId, ueId)
-            .orElseThrow(() -> new ImportOfxException("Invite não encontrado"));
+    public void rejectInvite(Long inviteId) {
+        var loggedUser = authService.getLoggedUser();
 
-      userUeInviteRepository.delete(invite);
-   }
+        var invite = userUeInviteRepository.findByIdAndEmailIgnoreCase(inviteId, loggedUser.getEmail())
+                .orElseThrow(() -> new UnauthorizedException("Acesso negado"));
 
-   public List<UserUeInviteDetailDTO> findUeInvites(Long ueId) {
-      var invites = userUeInviteRepository.findByUeId(ueId);
+        invite.setStatus(StatusUserInvite.REJECTED);
 
-      return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
-   }
+        userUeInviteRepository.save(invite);
+    }
 
-   public List<UserUeInviteDetailDTO> findMyInvites() {
-      var invites = userUeInviteRepository.findByEmailIgnoreCaseAndStatus(authService.getLoggedUserEmail(), StatusUserInvite.INVITED);
+    public void deleteInvite(Long ueId, Long inviteId) {
+        var invite = userUeInviteRepository.findByIdAndUeId(inviteId, ueId)
+                .orElseThrow(() -> new ImportOfxException("Invite não encontrado"));
 
-      return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
-   }
+        userUeInviteRepository.delete(invite);
+    }
 
+    public List<UserUeInviteDetailDTO> findUeInvites(Long ueId) {
+        var invites = userUeInviteRepository.findByUeId(ueId);
+
+        return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
+    }
+
+    public List<UserUeInviteDetailDTO> findMyInvites() {
+        var invites = userUeInviteRepository.findByEmailIgnoreCaseAndStatus(authService.getLoggedUserEmail(), StatusUserInvite.INVITED);
+
+        return UserUeInviteMapper.INSTANCE.entityToInviteListDTO(invites);
+    }
 
 }

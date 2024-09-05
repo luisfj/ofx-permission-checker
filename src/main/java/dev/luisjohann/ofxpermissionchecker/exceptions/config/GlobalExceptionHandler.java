@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
    }
 
    @ExceptionHandler(ImportOfxException.class)
-   @ResponseStatus(HttpStatus.UNAUTHORIZED)
+   @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
    @ResponseBody
    public ErrorResponse handleDefaultException(ImportOfxException ex) {
       return ex.getResponse();

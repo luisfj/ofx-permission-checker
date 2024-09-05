@@ -47,14 +47,14 @@ public class UeController {
         userUeService.removeUserAccess(ueId, userId);
     }
 
-    @PostMapping("/users/activate/{ueId}/{userId}")
+    @PutMapping("/users/activate/{ueId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void activateUserAccess(@PathVariable("ueId") Long ueId, @PathVariable("userId") Long userId) {
         checkPermissionService.checkPermission(EventPermissionType.INVITE, ueId);
         userUeService.activateUserAccess(ueId, userId);
     }
 
-    @PostMapping("/users/inactivate/{ueId}/{userId}")
+    @PutMapping("/users/inactivate/{ueId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void inactivateUserAccess(@PathVariable("ueId") Long ueId, @PathVariable("userId") Long userId) {
         checkPermissionService.checkPermission(EventPermissionType.INVITE, ueId);

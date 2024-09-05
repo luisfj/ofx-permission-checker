@@ -26,6 +26,14 @@ public class UeInvitesController {
         userUeInviteService.inviteUser(dto, ueId);
     }
 
+    @PutMapping("/invite/{ueId}/{inviteId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateInviteUser(@PathVariable("ueId") Long ueId, @PathVariable("inviteId") Long inviteId, @RequestBody UserUeInviteDTO dto) {
+        checkPermissionService.checkPermission(EventPermissionType.INVITE, ueId);
+
+        userUeInviteService.updateInviteUser(dto, ueId, inviteId);
+    }
+
     @PostMapping("/invite/confirm/{inviteId}")
     @ResponseStatus(HttpStatus.OK)
     public void confirmInvite(@PathVariable("inviteId") Long inviteId) {

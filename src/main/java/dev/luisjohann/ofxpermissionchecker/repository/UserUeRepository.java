@@ -1,5 +1,6 @@
 package dev.luisjohann.ofxpermissionchecker.repository;
 
+import dev.luisjohann.ofxpermissionchecker.enums.StatusUser;
 import dev.luisjohann.ofxpermissionchecker.model.UserUeEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -14,7 +15,7 @@ public interface UserUeRepository extends CrudRepository<UserUeEntity, Long> {
 
     boolean existsByUserEmailAndUeId(String userEmail, Long ueId);
 
-    boolean existsByUserIdNotAndUeIdAndAdministratorTrue(Long userId, Long ueId);
+    boolean existsByUserIdNotAndUeIdAndStatusAndAdministratorTrue(Long userId, Long ueId, StatusUser status);
 
     @Query("""
             select uu from UserUeEntity uu 
