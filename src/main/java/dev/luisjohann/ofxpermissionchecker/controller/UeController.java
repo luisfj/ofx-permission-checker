@@ -35,7 +35,7 @@ public class UeController {
     @PutMapping("/{ueId}")
     @ResponseStatus(HttpStatus.OK)
     public void atualizarUe(@PathVariable("ueId") Long ueId, @RequestBody UeRegisterDTO dto) {
-        log.info("atualizarUe: {}, nome:{}, cor:{}", ueId, dto.name(), dto.color());
+        log.info("atualizarUe : {}, nome:{}, cor:{}", ueId, dto.name(), dto.color());
         checkPermissionService.checkPermission(EventPermissionType.INVITE, ueId);
         ueService.updateUe(ueId, dto);
     }
