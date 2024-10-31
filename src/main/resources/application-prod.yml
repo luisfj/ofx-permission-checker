@@ -1,0 +1,11 @@
+spring:
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: ${KEYCLOAK_OFX_REALM}
+
+eureka:
+    client:
+        service-url:
+            defaultZone : http://ofx-service-registry:8761/eureka/
