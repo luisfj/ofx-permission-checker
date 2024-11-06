@@ -10,6 +10,13 @@ eureka:
         service-url:
             defaultZone : http://ofx-service-registry:8761/eureka/
 
+keycloak:
+    realm: ${KEYCLOAK_OFX_ADM_REALM}
+    adminClientId: ${KEYCLOAK_OFX_ADM_CLIENT_ID}
+    adminClientSecret: ${KEYCLOAK_OFX_ADM_CLIENT_SECRET}
+    urls:
+        auth: ${KEYCLOAK_OFX_ADM_BASE_PATH}
+
 conf:
     db:
         host: db
