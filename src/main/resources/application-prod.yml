@@ -9,3 +9,16 @@ eureka:
     client:
         service-url:
             defaultZone : http://ofx-service-registry:8761/eureka/
+
+conf:
+    db:
+        host: db
+        port: 5432
+        database: ofxdb
+        user: ${POSTGRESQL_USER}
+        pass: ${POSTGRESQL_PASS}
+    rabbit:
+        host: rabbitmq
+        port: 5672
+        user: ${RABBIT_USER}
+        pass: ${RABBIT_PASS}
