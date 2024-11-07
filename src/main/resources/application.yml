@@ -43,6 +43,12 @@ keycloak:
     urls:
         auth: http://localhost:9091
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
 queue:
   name:
     user-change: change.user.queue
