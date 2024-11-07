@@ -48,6 +48,10 @@ logging:
     org:
       springframework:
         security: DEBUG
+org:
+  slf4j:
+    simpleLogger:
+      defaultLogLevel: DEBUG
 
 queue:
   name:
