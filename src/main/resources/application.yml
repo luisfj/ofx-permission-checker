@@ -59,6 +59,7 @@ logging:
     org.keycloak.adapters: DEBUG
     org.keycloak.authentication: DEBUG
     org.keycloak.events: DEBUG
+    org.apache.http: DEBUG
 
 org:
   slf4j:
