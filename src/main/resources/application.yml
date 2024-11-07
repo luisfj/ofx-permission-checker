@@ -45,6 +45,9 @@ keycloak:
 
 logging:
   level:
+    root: DEBUG
+    org.springframework.web: DEBUG
+    dev.luisjohann.ofxpermissionchecker: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.security.web.authentication: DEBUG
