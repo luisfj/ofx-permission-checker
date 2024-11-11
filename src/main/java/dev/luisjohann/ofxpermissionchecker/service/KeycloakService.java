@@ -64,6 +64,12 @@ public class KeycloakService {
 
     public UserRepresentation findUserDetailsByEmail(String email) {
         log.info("Find user in keycloak realm '{}' by email: {}", realm, email);
+        try {
+            String realms = keycloakClient.realms().findAll().toString();
+            log.info("Realms encontrados: {}", realms);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         var response = keycloakClient.realm(realm)
                 .users()
                 .searchByEmail(email, true);
