@@ -3,8 +3,6 @@ server:
     max-http-header-size: 64kb
     servlet:
         context-path: /api/v1/permission-checker
-    ssl:
-      enabled: false
 spring:
     profiles:
         active: ${SPRING_ACTIVE_PROFILE:dev}
