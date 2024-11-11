@@ -64,18 +64,9 @@ public class KeycloakService {
 
     public UserRepresentation findUserDetailsByEmail(String email) {
         log.info("Find user in keycloak realm '{}' by email: {}", realm, email);
-        try {
-            String realms = keycloakClient.realms().findAll().toString();
-            log.info("Realms encontrados: {}", realms);
-        } catch (Exception e) {
-            log.error("Erro ao buscar realms.....", e);
-        }
         var response = keycloakClient.realm(realm)
                 .users()
                 .searchByEmail(email, true);
-        var userRep = response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
-        log.info("Usuário encontrado no keycloak com id: {}", userRep.getId());
         return response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
-
     }
 }
