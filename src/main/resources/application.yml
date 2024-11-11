@@ -46,31 +46,31 @@ keycloak:
     urls:
         auth: http://localhost:9091
 
-logging:
-  level:
-    root: DEBUG
-    org.springframework.web: DEBUG
-    dev.luisjohann.ofxpermissionchecker: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    org.springframework.security.web.authentication: DEBUG
-    org.springframework.security.oauth2.client: DEBUG
-    org.springframework.security.oauth2.jwt: DEBUG
-    org.springframework.security.oauth2.server.resource: DEBUG
-    org.keycloak: DEBUG
-    org.keycloak.adapters: DEBUG
-    org.keycloak.authentication: DEBUG
-    org.keycloak.events: DEBUG
-    org.apache.http: DEBUG
-    org.springframework.web.reactive.DispatcherHandler: DEBUG
-    org.springframework.web.reactive.function.client: DEBUG
-    org.springframework.web.reactive.function.server: DEBUG
-    org.springframework.web.filter.reactive: DEBUG
-
-org:
-  slf4j:
-    simpleLogger:
-      defaultLogLevel: DEBUG
+#logging:
+#  level:
+#    root: DEBUG
+#    org.springframework.web: DEBUG
+#    dev.luisjohann.ofxpermissionchecker: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.security.oauth2: DEBUG
+#    org.springframework.security.web.authentication: DEBUG
+#    org.springframework.security.oauth2.client: DEBUG
+#    org.springframework.security.oauth2.jwt: DEBUG
+#    org.springframework.security.oauth2.server.resource: DEBUG
+#    org.keycloak: DEBUG
+#    org.keycloak.adapters: DEBUG
+#    org.keycloak.authentication: DEBUG
+#    org.keycloak.events: DEBUG
+#    org.apache.http: DEBUG
+#    org.springframework.web.reactive.DispatcherHandler: DEBUG
+#    org.springframework.web.reactive.function.client: DEBUG
+#    org.springframework.web.reactive.function.server: DEBUG
+#    org.springframework.web.filter.reactive: DEBUG
+#
+#org:
+#  slf4j:
+#    simpleLogger:
+#      defaultLogLevel: DEBUG
 
 queue:
   name:
