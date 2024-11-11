@@ -60,6 +60,10 @@ logging:
     org.keycloak.authentication: DEBUG
     org.keycloak.events: DEBUG
     org.apache.http: DEBUG
+    org.springframework.web.reactive.DispatcherHandler: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+    org.springframework.web.reactive.function.server: DEBUG
+    org.springframework.web.filter.reactive: DEBUG
 
 org:
   slf4j:
