@@ -4,6 +4,7 @@ import dev.luisjohann.ofxpermissionchecker.dto.UserRegisterDTO;
 import dev.luisjohann.ofxpermissionchecker.exceptions.UnauthorizedException;
 import dev.luisjohann.ofxpermissionchecker.exceptions.UsuarioJaExisteException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -15,54 +16,59 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class KeycloakService {
-   final Keycloak keycloakClient;
+    final Keycloak keycloakClient;
 
-   @Value("${keycloak.realm}")
-   String realm;
+    @Value("${keycloak.realm}")
+    String realm;
 
-   public String addUser(UserRegisterDTO dto) {
-      var userRep = new org.keycloak.representations.idm.UserRepresentation();
-      userRep.setEmail(dto.email());
-      userRep.setUsername(dto.email());
-      userRep.setEnabled(Boolean.TRUE);
-      userRep.setEmailVerified(Boolean.TRUE);
+    public String addUser(UserRegisterDTO dto) {
+        log.info("Add user in keycloak realm '{}' by email: {}", realm, dto.email());
 
-      var credential = new CredentialRepresentation();
-      credential.setTemporary(false);
-      credential.setType(CredentialRepresentation.PASSWORD);
-      credential.setValue(dto.password());
+        var userRep = new org.keycloak.representations.idm.UserRepresentation();
+        userRep.setEmail(dto.email());
+        userRep.setUsername(dto.email());
+        userRep.setEnabled(Boolean.TRUE);
+        userRep.setEmailVerified(Boolean.TRUE);
 
-      userRep.setCredentials(List.of(credential));
+        var credential = new CredentialRepresentation();
+        credential.setTemporary(false);
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(dto.password());
 
-      var response = keycloakClient.realm(realm).users().create(userRep);
+        userRep.setCredentials(List.of(credential));
 
-      if (response.getStatus() == HttpStatus.SC_CREATED) {
-         var pathSplit = response.getLocation().getPath().split("/");
+        try (var response = keycloakClient.realm(realm).users().create(userRep)) {
+            if (response.getStatus() == HttpStatus.SC_CREATED) {
+                var pathSplit = response.getLocation().getPath().split("/");
 
-         return pathSplit[pathSplit.length - 1];
-      }
-      if (response.getStatus() == HttpStatus.SC_CONFLICT)
-         throw new UsuarioJaExisteException();
-      throw new RuntimeException(response.getStatusInfo().toString());
-   }
+                return pathSplit[pathSplit.length - 1];
+            }
+            if (response.getStatus() == HttpStatus.SC_CONFLICT)
+                throw new UsuarioJaExisteException();
+            throw new RuntimeException(response.getStatusInfo().toString());
+        }
 
-   public void removerUser() {
-      var response = keycloakClient.realm(realm).users().delete("3d6ea872-7ed2-46c7-990f-684405ebad83");
+    }
 
-      System.out.println("---------- deleted User USER ------------");
+    public void removerUser() {
+        var response = keycloakClient.realm(realm).users().delete("3d6ea872-7ed2-46c7-990f-684405ebad83");
 
-      if (response.getStatus() != HttpStatus.SC_NO_CONTENT) {
-         throw new RuntimeException(response.getStatusInfo().toString());
-      }
-   }
+        log.info("---------- deleted User USER ------------");
 
-   public UserRepresentation findUserDetailsByEmail(String email) {
-      var response = keycloakClient.realm(realm)
-              .users()
-              .searchByEmail(email, true);
+        if (response.getStatus() != HttpStatus.SC_NO_CONTENT) {
+            throw new RuntimeException(response.getStatusInfo().toString());
+        }
+    }
 
-      return response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
+    public UserRepresentation findUserDetailsByEmail(String email) {
+        log.info("Find user in keycloak realm '{}' by email: {}", realm, email);
+        var response = keycloakClient.realm(realm)
+                .users()
+                .searchByEmail(email, true);
 
-   }
+        return response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
+
+    }
 }
