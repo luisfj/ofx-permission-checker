@@ -68,12 +68,13 @@ public class KeycloakService {
             String realms = keycloakClient.realms().findAll().toString();
             log.info("Realms encontrados: {}", realms);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("Erro ao buscar realms.....", e);
         }
         var response = keycloakClient.realm(realm)
                 .users()
                 .searchByEmail(email, true);
-
+        var userRep = response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
+        log.info("Usuário encontrado no keycloak com id: {}", userRep.getId());
         return response.stream().findFirst().orElseThrow(() -> new UnauthorizedException("Usuário não cadastrado!"));
 
     }
